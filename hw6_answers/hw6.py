@@ -18,8 +18,10 @@
 # the parameters should be stored as attributes
 # called "name" and "symptoms" respectively
 
-
-#
+class Patient:
+    def __init__(self, name:str, syntoms:list):
+        self.name=name
+        self.syntoms=syntoms
 # 1.2)
 # Create a method called "add_test"
 # which takes two paramters:
@@ -27,8 +29,11 @@
 # 2. the results of the test (bool)
 #
 # This information should be stored somehow.
-
-
+        
+    def add_test(self, name_test:str, results:bool):
+        name_test= name_test
+        results=results # we should be able to store multiple tests (not there yet)...
+    
 #
 # 1.3)
 # Create a method called has_covid()
