@@ -19,9 +19,10 @@
 # called "name" and "symptoms" respectively
 
 class Patient:
-    def __init__(self, name:str, syntoms:list):
+    def __init__(self, name:str, symptoms:list):
         self.name=name
-        self.syntoms=syntoms
+        self.symptoms=symptoms
+        self.list_of_tests={}
 # 1.2)
 # Create a method called "add_test"
 # which takes two paramters:
@@ -29,11 +30,13 @@ class Patient:
 # 2. the results of the test (bool)
 #
 # This information should be stored somehow.
-        
-    def add_test(self, name_test:str, results:bool):
-        name_test= name_test
-        results=results # we should be able to store multiple tests (not there yet)...
     
+    def add_test(self, name_test:str, results:bool):
+        self.list_of_tests[name_test]=results
+        return self.list_of_tests
+         
+        # we should be able to store multiple tests (not there yet).. 
+        
 #
 # 1.3)
 # Create a method called has_covid()
@@ -53,8 +56,31 @@ class Patient:
 #    following symptoms:
 #    ['fever', 'cough', 'anosmia']
 
+    def has_covid(self) -> float:
+           
+        if self.list_of_tests.get("covid")==True:
+            return 0.99
+        
+        elif self.list_of_tests.get("covid")==False:
+            return 0.01
+        
+        else:
+            prob_covid=0.05
+            for i in ["fever", "cough", "anosmia"]:
+                if i in self.symptoms:
+                    prob_covid=+ prob_covid+0.01
+            return round(prob_covid, 2)
+        
+        
+d= Patient("Daniela", sym)
 
-######################
+d.has_covid()
+
+d.add_test("covid", False)
+d.add_test("flu", True)
+
+d.has_covid() #something not working!
+
 
 # 2. In this exercise you will make an English Deck class made of Card classes
 # 
@@ -66,6 +92,7 @@ class Patient:
 # 2.1) Create a Card class called "Card".
 # The constructor (__init__ ) should have two parameters the "suit" and the "value" and the suit of the card.
 # The class should store both as attributes.
+
 
 class Card:
    
@@ -84,6 +111,7 @@ Spade_ace.value
 
 mystery = Card("hearts", 3)
 mystery.show()
+
 
 # 2.2) Create a Deck class called "Deck".
 # The constructor will create an English Deck (suits: Hearts, Diamonds, Clubs, Spades and values: A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K).
@@ -145,6 +173,8 @@ for i in range(0,5) :
 list
 
 
+
+
 ###################
 
 # 3. In this exercise you will create an interface that will serve as template 
@@ -153,6 +183,7 @@ list
 # 3.1Create an abstract class (interface) called "PlaneFigure" with two abstract methods:
 # compute_perimeter() that will implement the formula to compute the perimiter of the plane figure.
 # compute_surface() that will implement the formula to compute the surface of the plane figure.
+
 
 #non-abstract version
 #class PaneFigure_og()
@@ -185,15 +216,12 @@ class Triangle(PlaneFigure):
     def compute_perimeter(base,c1,c2,h):
         return print(base + c1 + c2)
 
-# 3.3 Create a child class called "Rectangle" that inherits from "PlaneFigure" and has as parameters in the constructor "a", "b" (sides of the rectangle). Implement the abstract methods with the formula of the rectangle.
 
 # 3.3 Create a child class called "Circle" that inherits from "PlaneFigure" and has as parameters in the constructor "radius" (radius of the circle). Implement the abstract methods with the formula of the circle.
 
 
 
 #reference examaple
-
-
 
 class PlaneFigure(ABC):
     def rk(self):
