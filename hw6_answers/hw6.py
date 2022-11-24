@@ -62,17 +62,33 @@ class Patient:
 #
 # the Deck class should represent the collection of cards and actions on them
 
+
 # 2.1) Create a Card class called "Card".
 # The constructor (__init__ ) should have two parameters the "suit" and the "value" and the suit of the card.
 # The class should store both as attributes.
 
+class Card:
+   
+    def __init__(self, suit:str, value:int): #value may also be a string (e.g. ace/ king etc)
+        self.suit = suit
+        self.value = value
+
+#test    
+Spade_ace = Card("spades", "ace")
+Spade_ace.suit
+Spade_ace.value
 
 # 2.2) Create a Deck class called "Deck".
 # The constructor will create an English Deck (suits: Hearts, Diamonds, Clubs, Spades and values: A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K). It will create a list of cards that contain each of the existing cards in an English Deck.
 # Create a method called "shuffle" that shuffles the cards randomly. 
 # Create a method called "draw" that will draw a single card and print the suit and value. When a card is drawn, the card should be removed from the deck.
 
+class Deck:
+   
+    def __init__(self, )
 
+    def shuffle:
+        
 
 ###################
 
