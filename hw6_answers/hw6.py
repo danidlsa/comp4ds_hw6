@@ -19,9 +19,10 @@
 # called "name" and "symptoms" respectively
 
 class Patient:
-    def __init__(self, name:str, syntoms:list):
+    def __init__(self, name:str, symptoms:list):
         self.name=name
-        self.syntoms=syntoms
+        self.symptoms=symptoms
+        self.list_of_tests={}
 # 1.2)
 # Create a method called "add_test"
 # which takes two paramters:
@@ -29,11 +30,13 @@ class Patient:
 # 2. the results of the test (bool)
 #
 # This information should be stored somehow.
-        
-    def add_test(self, name_test:str, results:bool):
-        name_test= name_test
-        results=results # we should be able to store multiple tests (not there yet)...
     
+    def add_test(self, name_test:str, results:bool):
+        self.list_of_tests[name_test]=results
+        return self.list_of_tests
+         
+        # we should be able to store multiple tests (not there yet).. 
+        
 #
 # 1.3)
 # Create a method called has_covid()
@@ -54,38 +57,34 @@ class Patient:
 #    ['fever', 'cough', 'anosmia']
 
 
-######################
-
-# 2. In this exercise you will make an English Deck class made of Card classes
-# 
-# the Card class should represent each of the cards
-#
-# the Deck class should represent the collection of cards and actions on them
-
-# 2.1) Create a Card class called "Card".
-# The constructor (__init__ ) should have two parameters the "suit" and the "value" and the suit of the card.
-# The class should store both as attributes.
-
-
-# 2.2) Create a Deck class called "Deck".
-# The constructor will create an English Deck (suits: Hearts, Diamonds, Clubs, Spades and values: A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K). It will create a list of cards that contain each of the existing cards in an English Deck.
-# Create a method called "shuffle" that shuffles the cards randomly. 
-# Create a method called "draw" that will draw a single card and print the suit and value. When a card is drawn, the card should be removed from the deck.
 
 
 
-###################
+    def has_covid(self) -> float:
+           
+        if self.list_of_tests.get("covid")==True:
+            return 0.99
+        
+        elif self.list_of_tests.get("covid")==False:
+            return 0.01
+        
+        else:
+            prob_covid=0.05
+            for i in ["fever", "cough", "anosmia"]:
+                if i in self.symptoms:
+                    prob_covid=+ prob_covid+0.01
+            return round(prob_covid, 2)
+        
+        
+d= Patient("Daniela", sym)
 
-# 3. In this exercise you will create an interface that will serve as template 
-# for different figures to compute their perimeter and surface. 
+d.has_covid()
 
-# 3.1Create an abstract class (interface) called "PlaneFigure" with two abstract methods:
-# compute_perimeter() that will implement the formula to compute the perimiter of the plane figure.
-# compute_surface() that will implement the formula to compute the surface of the plane figure.
+d.add_test("covid", False)
+d.add_test("flu", True)
 
-# 3.2 Create a child class called "Triangle" that inherits from "PlaneFigure" and has as parameters in the constructor "base", "c1", "c2", "h". ("base" being the base, "c1" and "c2" the other two sides of the triangle and "h" the height). Implement the abstract methods with the formula of the triangle.
+d.has_covid() #something not working!
 
-# 3.3 Create a child class called "Rectangle" that inherits from "PlaneFigure" and has as parameters in the constructor "a", "b" (sides of the rectangle). Implement the abstract methods with the formula of the rectangle.
 
 # 3.3 Create a child class called "Circle" that inherits from "PlaneFigure" and has as parameters in the constructor "radius" (radius of the circle). Implement the abstract methods with the formula of the circle.
 
