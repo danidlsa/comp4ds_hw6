@@ -71,7 +71,8 @@ class Patient:
                     prob_covid=+ prob_covid+0.01
             return round(prob_covid, 2)
         
-        
+
+sym= ["cough", "sore throat"]        
 d= Patient("Daniela", sym)
 
 d.has_covid()
@@ -79,8 +80,9 @@ d.has_covid()
 d.add_test("covid", False)
 d.add_test("flu", True)
 
-d.has_covid() #something not working!
-
+d.has_covid() 
+d.add_test("covid", True)
+d.has_covid()
 
 # 2. In this exercise you will make an English Deck class made of Card classes
 # 
