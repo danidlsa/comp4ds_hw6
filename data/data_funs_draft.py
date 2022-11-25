@@ -17,60 +17,85 @@ import numpy as np
 # and returns two dataframes, one for train and another for test.
 # Internally, the class can use the function defined in hw5.
 
-#not workin - try iloc instead
-
 class create_data():
-    def __init__(self, data_loc):
-        self.df = pd.read_csv(data_loc)
+    def __init__(self):
+        self.df = pd.read_csv("https://raw.githubusercontent.com/danidlsa/comp4ds_hw6/main/data/sample_diabetes_mellitus_data.csv")
         self.tar = self.df.iloc[:,-1]
         self.var = self.df.iloc[:,:-1]
     
-    def split(self):
-        X_train, X_test, y_train, y_test = train_test_split(self.var, self.tar, random_state = 2, train_size = .80)
-        #return  X_train, X_test, y_train, y_test
-
+    def split(self, train_size):
+        X_train, X_test, y_train, y_test = train_test_split(self.var, self.tar, random_state = 2, train_size = train_size)
         df_train = pd.concat([X_train, y_train], axis= 1)
         df_test = pd.concat([X_test, y_test], axis=1)
         return df_train, df_test
     
-diabetes_data = create_data("https://raw.githubusercontent.com/MargheritaPhilipp/comp4ds_hw5/main/hw5_files/sample_diabetes_mellitus_data.csv")
+        
+# testing ground - can be deleted at the end
+diabetes_data = create_data()
 
-diabetes_train, diabetes_test = diabetes_data.split()
+diabetes_train, diabetes_test = diabetes_data.split(0.8)
 
 diabetes_train
 diabetes_test
-
-        
-# testing ground - can be deleted at the end
-diabetes_data.df[diabetes_data.var]
-
-diabetes_data.tar
-diabetes_data.var
-
-def diabetes_data():
-    url="https://raw.githubusercontent.com/MargheritaPhilipp/comp4ds_hw5/main/hw5_files/sample_diabetes_mellitus_data.csv"
-    df = pd.read_csv(url)
-    return df
-
-df = diabetes_data()
-df.iloc[:,-1]
-
-df.columns[-1]
-df.columns[:-1]
-
+#diabetes_data.tar
+#diabetes_data.var
 
 # b) Create a preprocessor class that removes those rows that contain NaN values in the columns:
 # age, gender, ethnicity.
+
+
+def drop_selected_nans(var_list, df):
+    df.dropna(subset=var_list, inplace=True)
+    return df
         
 class clean_demographics():
+    def __init__(self, df):
+        self.vars_to_clean=["age", "gender", "ethnicity"]
+        self.df=df.copy()
+        
+    def drop_selected_nans(self):
+        self.df.dropna(subset=self.vars_to_clean, inplace=True)
+        return self.df
+    
+# test
+
+df_train_clean1 = clean_demographics(diabetes_train)        
+df_train_clean1.df
+df_train_clean1= df_train_clean1.drop_selected_nans()        
+        
+    
 
 
 # c) Create a preprocessor class that fills NaN with the mean value of the column in the columns:
 # height, weight.
 
-class clean_measurements():
 
+def fill_nans(var_list, df):
+    for v in var_list:
+        df[v]= np.where(pd.isna(df[v])==True, 
+                                   df[v].mean(),
+                                   df[v])
+    return df
+
+
+class clean_measurements():
+    def __init__(self, df):
+        self.vars_to_fill=["height", "weight"]
+        self.df=df.copy()
+        
+    def fill_nans(self):
+        for v in self.vars_to_fill:
+            self.df[v]= np.where(pd.isna(self.df[v])==True, 
+                            self.df[v].mean(),
+                            self.df[v])
+        return self.df
     
+# test
+
+df_train_clean2 = clean_measurements(df_train_clean1)
+df_train_clean2.df
+df_train_clean2.vars_to_fill
+df_train_clean2 = df_train_clean2.fill_nans()
 
 # d) Create at least two feature classes that transform some of the columns in the data set.
 # These feature classes need to have the same structure defined by an abstract parent class
