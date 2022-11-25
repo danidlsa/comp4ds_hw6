@@ -217,12 +217,12 @@ class Triangle(PlaneFigure):
     def compute_perimeter(self):
         perimeter = (self.c1 + self.c2 + self.base)
         #perimeter = self.c1 + self.c2 + self.base
-        return perimeter
+        return ("Your triangle's perimeter is " + str(perimeter) + " unit(s)")
         #return perimeter
     
     def compute_surface(self):
         area = (0.5 * self.base * self.height)
-        return area
+        return  ("Your rectangle's area is " + str(area) + " unit(s) squared")
 
 #ringhtangled triangle: (b=5, c1=4, c2=3, h=3 --> A=7.5, P=12)
 
@@ -246,10 +246,12 @@ class Rectangle(PlaneFigure):
         self.side2 = float(b)
        
     def compute_perimeter(self):
-        return((2 * self.side1) + (2 * self.side2)) #change back to return?
+        per = ((2 * self.side1) + (2 * self.side2)) #change back to return?
+        return ("Your rectangle's perimeter is " + str(per) + " unit(s)")
     
     def compute_surface(self):
-        return (self.side1 * self.side2)
+        area = (self.side1 * self.side2)
+        return ("Your rectangle's area is " + str(area) + " unit(s) squared")
 
 
 rect_test = Rectangle(5,3) # P=16 A=15
@@ -273,10 +275,13 @@ class Circle(PlaneFigure):
         self.radius = float(radius)
        
     def compute_perimeter(self):
-        return (2 * self.radius * math.pi)
+        per = (2 * self.radius * math.pi)
+        return ("Your circle's perimeter is " + str(per) + " unit(s)")
+
     
     def compute_surface(self):
-        return (math.pi * (self.radius **2))
+        area = (math.pi * (self.radius **2))
+        return ("Your circle's area is " + str(area) + " unit(s) squared")
 
 
 circ_test = Circle(3)
