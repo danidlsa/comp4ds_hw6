@@ -22,28 +22,30 @@ import numpy as np
 class create_data():
     def __init__(self, data_loc):
         self.df = pd.read_csv(data_loc)
-        self.tar = list(self.df.columns[-1:])
-        self.var = list(self.df.columns[:-1])
+        self.tar = self.df.iloc[:,-1]
+        self.var = self.df.iloc[:,:-1]
     
     def split(self):
-        return X_train, X_test, y_train, y_test= train_test_split(self.df[[self.var]], self.df[[self.tar]], random_state = 2, train_size = .80)
-        
-    
-    df_train = pd.concat[X_train, y_train]
-        df_test = pd.concat[X_test, y_test]
-        return df_test, df_train
+        X_train, X_test, y_train, y_test = train_test_split(self.var, self.tar, random_state = 2, train_size = .80)
+        #return  X_train, X_test, y_train, y_test
+
+        df_train = pd.concat([X_train, y_train], axis= 1)
+        df_test = pd.concat([X_test, y_test], axis=1)
+        return df_train, df_test
     
 diabetes_data = create_data("https://raw.githubusercontent.com/MargheritaPhilipp/comp4ds_hw5/main/hw5_files/sample_diabetes_mellitus_data.csv")
 
-diabetes_data.df[diabetes_data.var]
+diabetes_train, diabetes_test = diabetes_data.split()
 
-diabetes_data.split()
-
-diabetes_data.tar
-diabetes_data.var
+diabetes_train
+diabetes_test
 
         
 # testing ground - can be deleted at the end
+diabetes_data.df[diabetes_data.var]
+
+diabetes_data.tar
+diabetes_data.var
 
 def diabetes_data():
     url="https://raw.githubusercontent.com/MargheritaPhilipp/comp4ds_hw5/main/hw5_files/sample_diabetes_mellitus_data.csv"
