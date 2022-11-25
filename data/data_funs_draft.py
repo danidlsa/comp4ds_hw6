@@ -13,6 +13,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import roc_auc_score
 import numpy as np
 
+from abc import ABC, abstractmethod
+
 # a) Create a class with a primary method that loads the data
 # and returns two dataframes, one for train and another for test.
 # Internally, the class can use the function defined in hw5.
@@ -44,9 +46,6 @@ diabetes_test
 # age, gender, ethnicity.
 
 
-def drop_selected_nans(var_list, df):
-    df.dropna(subset=var_list, inplace=True)
-    return df
         
 class clean_demographics():
     def __init__(self, df):
@@ -69,13 +68,6 @@ df_train_clean1= df_train_clean1.drop_selected_nans()
 # c) Create a preprocessor class that fills NaN with the mean value of the column in the columns:
 # height, weight.
 
-
-def fill_nans(var_list, df):
-    for v in var_list:
-        df[v]= np.where(pd.isna(df[v])==True, 
-                                   df[v].mean(),
-                                   df[v])
-    return df
 
 
 class clean_measurements():
@@ -102,8 +94,36 @@ df_train_clean2 = df_train_clean2.fill_nans()
 # (Remember: polymorphism).
 
 
-    # suggested features: one-hot encoding for dummies on a couple of categorical ones
-    # e.g. hospital_admit_source  OR 	icu_admit_source
+
+class Transform_features(ABC):
+    def __init__(self, df):
+        self.df=df
+    
+    @abstractmethod
+    def one_hot_enc(self):
+       return NotImplementedError()
+
+
+class ethnicity_oh(Transform_features):
+    
+    def one_hot_enc(self):
+        self.var_data=pd.get_dummies(self.df["ethnicity"], drop_first=False)
+        self.df=self.df.join(self.var_data)
+        return self.df
+
+class gender_oh(Transform_features):
+
+    def one_hot_enc(self):
+        self.var_data=pd.get_dummies(self.df["gender"], drop_first=True) # here is the difference with the other class, this one does drop the first variable
+        self.df=self.df.join(self.var_data)
+        return self.df
+
+# test
+
+df_train_eth = ethnicity_oh(df_train_clean2)
+df_train_eth = df_train_eth.one_hot_enc()
+
+df_train_gender= gender_oh(df_train_eth).one_hot_enc()
 
 
 # e) Create a model class with two primary methods: train and predict.
