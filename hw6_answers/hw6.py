@@ -176,7 +176,6 @@ list
 
 
 
-
 ###################
 
 # 3. In this exercise you will create an interface that will serve as template 
@@ -186,11 +185,6 @@ list
 # compute_perimeter() that will implement the formula to compute the perimiter of the plane figure.
 # compute_surface() that will implement the formula to compute the surface of the plane figure.
 
-
-#non-abstract version
-#class PaneFigure_og()
-
-import abc
 from abc import ABC, abstractmethod
 
 class PlaneFigure(ABC):
@@ -199,11 +193,11 @@ class PlaneFigure(ABC):
     
     @abstractmethod
     def compute_perimeter(self):
-       pass
+        raise NotImplementedError() #return NotImplementedError  #previously just "pass" (without return)
 
     @abstractmethod #wrong: @abc.abstractproperty
-    def compute_perimeter(self):
-       pass
+    def compute_surface(self):
+       raise NotImplementedError() #return NotImplementedError
 
 
 # 3.2 Create a child class called "Triangle" that inherits from "PlaneFigure" and
@@ -212,29 +206,84 @@ class PlaneFigure(ABC):
 #Implement the abstract methods with the formula of the triangle.
 
 class Triangle(PlaneFigure):
-    def __init__(self):
     
-    @classmethod
-    def compute_perimeter(base,c1,c2,h):
-        return print(base + c1 + c2)
+    def __init__(self, base, c1, c2, h):
+        self.base = float(base)
+        self.c1 = float(c1)
+        self.c2 = float(c2)
+        self.height = float(h)
+        #self.compute_perimeter() #not required
+
+    def compute_perimeter(self):
+        perimeter = (self.c1 + self.c2 + self.base)
+        #perimeter = self.c1 + self.c2 + self.base
+        return perimeter
+        #return perimeter
+    
+    def compute_surface(self):
+        area = (0.5 * self.base * self.height)
+        return area
+
+#ringhtangled triangle: (b=5, c1=4, c2=3, h=3 --> A=7.5, P=12)
+
+tri_test = Triangle(base=5, c1=4, c2=3, h=3) #if we use this version we have to specify the keys for each one
+#tri_test = Triangle(5, 4, 3, 3)
+
+print(tri_test.base)
+print(tri_test.c1)
+
+print(tri_test.compute_perimeter())
+print(tri_test.compute_surface())
+
+Triangle(5, 4, 3, 3).compute_perimeter()
+
+# 3.3 Create a child class called "Rectangle" that inherits from "PlaneFigure" and has as
+#parameters in the constructor "a", "b" (sides of the rectangle). Implement the abstract methods with the formula of the rectangle.
+
+class Rectangle(PlaneFigure):
+    def __init__(self, a, b):
+        self.side1 = float(a)
+        self.side2 = float(b)
+       
+    def compute_perimeter(self):
+        return((2 * self.side1) + (2 * self.side2)) #change back to return?
+    
+    def compute_surface(self):
+        return (self.side1 * self.side2)
 
 
-# 3.3 Create a child class called "Circle" that inherits from "PlaneFigure" and has as parameters in the constructor "radius" (radius of the circle). Implement the abstract methods with the formula of the circle.
+rect_test = Rectangle(5,3) # P=16 A=15
+
+print(rect_test.side1)
+print(rect_test.side2)
+
+print(rect_test.compute_perimeter())
+print(rect_test.compute_surface())
 
 
+# 3.3 Create a child class called "Circle" that inherits from "PlaneFigure" and has as
+#parameters in the constructor "radius" (radius of the circle). Implement the abstract methods with the formula of the circle.
 
-#reference examaple
+import math
+math.pi
 
-class PlaneFigure(ABC):
-    def rk(self):
-        print("Abstract Base Class")
- 
-class Triangle(PlaneFigure):
-    def rk(self):
-        super().rk() #not required in our case as 
-        print("subclass ")
- 
-# Driver code
-r = K()
-r.rk()
+
+class Circle(PlaneFigure):
+    def __init__(self, radius):
+        self.radius = float(radius)
+       
+    def compute_perimeter(self):
+        return (2 * self.radius * math.pi)
+    
+    def compute_surface(self):
+        return (math.pi * (self.radius **2))
+
+
+circ_test = Circle(3)
+
+print(circ_test.radius)
+print(circ_test.compute_perimeter())
+print(circ_test.compute_surface())
+
+
 
