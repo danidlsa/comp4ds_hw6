@@ -14,71 +14,95 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import roc_auc_score
 import numpy as np
 
+from abc import ABC, abstractmethod
+
 # a) Create a class with a primary method that loads the data
 # and returns two dataframes, one for train and another for test.
 # Internally, the class can use the function defined in hw5.
 
-#not workin - try iloc instead
-
 class create_data():
-    def __init__(self, data_loc):
-        self.df = pd.read_csv(data_loc)
+    def __init__(self):
+        self.df = pd.read_csv("https://raw.githubusercontent.com/danidlsa/comp4ds_hw6/main/data/sample_diabetes_mellitus_data.csv")
         self.tar = self.df.iloc[:,-1]
         self.var = self.df.iloc[:,:-1]
     
-    def split(self):
-        X_train, X_test, y_train, y_test = train_test_split(self.var, self.tar, random_state = 2, train_size = .80)
-        #return  X_train, X_test, y_train, y_test
-
+    def split(self, train_size):
+        X_train, X_test, y_train, y_test = train_test_split(self.var, self.tar, random_state = 2, train_size = train_size)
         df_train = pd.concat([X_train, y_train], axis= 1)
         df_test = pd.concat([X_test, y_test], axis=1)
         return df_train, df_test
     
-diabetes_data = create_data("https://raw.githubusercontent.com/MargheritaPhilipp/comp4ds_hw5/main/hw5_files/sample_diabetes_mellitus_data.csv")
+        
+# testing ground - can be deleted at the end
+diabetes_data = create_data()
 
-diabetes_train, diabetes_test = diabetes_data.split()
+diabetes_train, diabetes_test = diabetes_data.split(0.8)
 
 diabetes_train
 diabetes_test
-
-        
-# testing ground - can be deleted at the end
-diabetes_data.df[diabetes_data.var]
-
-diabetes_data.tar
-diabetes_data.var
-
-def diabetes_data():
-    url="https://raw.githubusercontent.com/MargheritaPhilipp/comp4ds_hw5/main/hw5_files/sample_diabetes_mellitus_data.csv"
-    df = pd.read_csv(url)
-    return df
-
-df = diabetes_data()
-df.iloc[:,-1]
-
-df.columns[-1]
-df.columns[:-1]
-
+#diabetes_data.tar
+#diabetes_data.var
 
 # b) Create a preprocessor class that removes those rows that contain NaN values in the columns:
 # age, gender, ethnicity.
+
+
         
-<<<<<<< Updated upstream
 class clean_demographics():
-=======
+    def __init__(self, df):
+        self.vars_to_clean=["age", "gender", "ethnicity"]
+        self.df=df.copy()
+        
+    def drop_selected_nans(self):
+        self.df.dropna(subset=self.vars_to_clean, inplace=True)
+        return self.df
+    
+# test
+
+df_train_clean1 = clean_demographics(diabetes_train)        
+df_train_clean1.df
+df_train_clean1= df_train_clean1.drop_selected_nans()        
+        
 df_test_clean1 = clean_demographics(diabetes_test)        
 df_test_clean1.df
 df_test_clean1= df_test_clean1.drop_selected_nans()        
     
->>>>>>> Stashed changes
 
 
 # c) Create a preprocessor class that fills NaN with the mean value of the column in the columns:
 # height, weight.
 
-class clean_measurements():
 
+
+class clean_measurements():
+    def __init__(self, df):
+        self.vars_to_fill=["height", "weight"]
+        self.df=df.copy()
+        
+
+class clean_demographics():
+
+    def fill_nans(self):
+        for v in self.vars_to_fill:
+            self.df[v]= np.where(pd.isna(self.df[v])==True, 
+                            self.df[v].mean(),
+                            self.df[v])
+        return self.df
     
+# test
+
+df_test_clean1 = clean_demographics(diabetes_test)        
+df_test_clean1.df
+df_test_clean1= df_test_clean1.drop_selected_nans()     
+
+df_train_clean2 = clean_measurements(df_train_clean1)
+df_train_clean2.df
+df_train_clean2.vars_to_fill
+df_train_clean2 = df_train_clean2.fill_nans()
+
+
+df_test_clean2 = clean_measurements(df_test_clean1).fill_nans()
+
 
 
 df_test_clean2 = clean_measurements(df_test_clean1).fill_nans()
@@ -89,8 +113,40 @@ df_test_clean2 = clean_measurements(df_test_clean1).fill_nans()
 # (Remember: polymorphism).
 
 
-    # suggested features: one-hot encoding for dummies on a couple of categorical ones
-    # e.g. hospital_admit_source  OR 	icu_admit_source
+
+class Transform_features(ABC):
+    def __init__(self, df):
+        self.df=df
+    
+    @abstractmethod
+    def one_hot_enc(self):
+       return NotImplementedError()
+
+
+class ethnicity_oh(Transform_features):
+    
+    def one_hot_enc(self):
+        self.var_data=pd.get_dummies(self.df["ethnicity"], drop_first=False)
+        self.df=self.df.join(self.var_data)
+        return self.df
+
+class gender_oh(Transform_features):
+
+    def one_hot_enc(self):
+        self.var_data=pd.get_dummies(self.df["gender"], drop_first=True) # here is the difference with the other class, this one does drop the first variable
+        self.df=self.df.join(self.var_data)
+        return self.df
+
+# test
+
+df_train_eth = ethnicity_oh(df_train_clean2)
+df_train_eth = df_train_eth.one_hot_enc()
+
+df_train_gender= gender_oh(df_train_eth).one_hot_enc()
+
+df_test_eth= ethnicity_oh(df_test_clean2).one_hot_enc()
+
+df_test_gender= gender_oh(df_train_eth).one_hot_enc()
 
 df_test_eth= ethnicity_oh(df_test_clean2).one_hot_enc()
 
