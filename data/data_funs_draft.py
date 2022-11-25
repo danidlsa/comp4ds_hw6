@@ -79,6 +79,9 @@ class clean_measurements():
         self.vars_to_fill=["height", "weight"]
         self.df=df.copy()
         
+
+class clean_demographics():
+
     def fill_nans(self):
         for v in self.vars_to_fill:
             self.df[v]= np.where(pd.isna(self.df[v])==True, 
@@ -88,10 +91,18 @@ class clean_measurements():
     
 # test
 
+df_test_clean1 = clean_demographics(diabetes_test)        
+df_test_clean1.df
+df_test_clean1= df_test_clean1.drop_selected_nans()     
+
 df_train_clean2 = clean_measurements(df_train_clean1)
 df_train_clean2.df
 df_train_clean2.vars_to_fill
 df_train_clean2 = df_train_clean2.fill_nans()
+
+
+df_test_clean2 = clean_measurements(df_test_clean1).fill_nans()
+
 
 
 df_test_clean2 = clean_measurements(df_test_clean1).fill_nans()
@@ -132,6 +143,10 @@ df_train_eth = ethnicity_oh(df_train_clean2)
 df_train_eth = df_train_eth.one_hot_enc()
 
 df_train_gender= gender_oh(df_train_eth).one_hot_enc()
+
+df_test_eth= ethnicity_oh(df_test_clean2).one_hot_enc()
+
+df_test_gender= gender_oh(df_train_eth).one_hot_enc()
 
 df_test_eth= ethnicity_oh(df_test_clean2).one_hot_enc()
 
