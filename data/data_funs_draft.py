@@ -9,12 +9,13 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import roc_auc_score
 import numpy as np
 
 from abc import ABC, abstractmethod
+
+
+import warnings
+warnings.filterwarnings('ignore')
 
 # a) Create a class with a primary method that loads the data
 # and returns two dataframes, one for train and another for test.
@@ -138,49 +139,12 @@ df_test_eth= ethnicity_oh(df_test_clean2).one_hot_enc()
 df_test_gender= gender_oh(df_train_eth).one_hot_enc()
 
 
+
 # e) Create a model class with two primary methods: train and predict.
 # When the model class is initialized, the constructor (init) should receive as inputs (at least):
 # 1. Feature columns that are going to be used
 # 2. Target column that is going to be used
 # 3. (bonus) Hyperparameters of the model to be used.
-
-class Train_and_predict_RF:
-    def __init__(self, features_list:list, 
-                 target:str, 
-                 df_train,
-                 df_test,
-                 n_estimators:int, # hyperparameter tunning 1
-                 max_depth:int): # hyperparameter tunning 2
-        self.X_train=df_train.loc[:,features_list]
-        self.y_train=df_train.loc[:,[target]]
-        self.target=target
-        self.X_test=df_test.loc[:,features_list]
-        self.y_test=df_test.loc[:,[target]]
-        self.n_estimators=n_estimators
-        self.max_depth=max_depth
-        
-    def train(self):
-        self.model_tree= RandomForestClassifier(random_state=0,
-                                                max_depth=self.max_depth,
-                                                n_estimators=self.n_estimators)
-        self.model_tree.fit(self.X_train, self.y_train)
-        return self.model_tree
-    
-    def predict(self):
-        self.y_pred = self.model_tree.predict(self.X_test)
-        self.acc = accuracy_score(self.y_test, self.y_pred)
-        return print("Accuracy of the Random Forest model: " + str(self.acc))
-        
-
-# test
-
-features = ['age','height','weight','aids','cirrhosis', 'hepatic_failure', 'immunosuppression', 'leukemia', 'lymphoma', 'solid_tumor_with_metastasis']
-
-model_randomf = Train_and_predict_RF(features, "diabetes_mellitus", df_train_gender, df_test_gender, 8, 4)
-
-model_randomf.train()
-
-model_randomf.predict()
 
 # f) The model class should have as private attributes each of the inputs of the constructor 
 # and an additional one, called “model” that will be a model from sklearn chosen by the team
@@ -192,3 +156,39 @@ model_randomf.predict()
 
 # 2.The predict method should receive a dataframe, use the features passed to filter the columns and return
 # the predicted probabilities using the .predict_proba method of the sklearn class selected.
+
+
+class Train_and_predict_RF:
+    def __init__(self, feature_cols, 
+                 target_col, 
+                 n_estimators:int, # hyperparameter tunning 1
+                 max_depth:int): # hyperparameter tunning 2
+        self.__features=feature_cols
+        self.__target=target_col
+        self.model=RandomForestClassifier(max_depth=max_depth,
+                                          n_estimators=n_estimators)
+        
+    def train(self, df_train):  
+        self.X=df_train.loc[:,self.__features]
+        self.y=df_train.loc[:,[self.__target]]
+        self.model.fit(self.X, self.y)
+        return self.model
+    
+    def predict(self, df_test): 
+        self.X_test= df_test.loc[:,self.__features] # filter cols
+        self.y_pred = self.model.predict(self.X_test)
+        return self.y_pred
+    
+    
+# test 
+features = ['age','height','weight','aids','cirrhosis', 'hepatic_failure', 'immunosuppression', 'leukemia', 'lymphoma', 'solid_tumor_with_metastasis',
+            'M', 'Asian', 'Hispanic', 'Native American', 'African American' ]
+
+model_randomf = Train_and_predict_RF(features, "diabetes_mellitus", 8, 4)
+
+model_randomf.train(df_train_gender)
+
+model_randomf.predict(df_test_gender)
+
+# This is working, but when adding
+
