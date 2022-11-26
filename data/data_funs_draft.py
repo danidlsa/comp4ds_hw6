@@ -190,5 +190,4 @@ model_randomf.train(df_train_gender)
 
 model_randomf.predict(df_test_gender)
 
-# This is working, but when adding
 
