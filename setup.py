@@ -26,7 +26,7 @@ setup(
     description='Setting up a python package',
     author='Daniela de los Santos & Margherita Philipp',
     url='https://github.com/danidlsa/comp4ds_hw6.git',
-    packages=find_packages(where='src', exclude=['tests']),
+    packages=find_packages('src'),
     package_dir={'': 'src'},
     install_requires=get_requirements(),
     setup_requires=['pytest-runner', 'wheel'],
