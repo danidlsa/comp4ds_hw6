@@ -1,1 +1,2 @@
-# comp4ds_hw6
+# HW 6: Python: Object oriented programming
+### Authors: Daniela de los Santos & Margherita Phillipp
