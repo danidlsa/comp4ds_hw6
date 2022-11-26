@@ -36,7 +36,6 @@ class Train_and_predict_RF:
         self.X=df_train.loc[:,self.__features]
         self.y=df_train.loc[:,[self.__target]]
         self.model.fit(self.X, self.y)
-        return self.model
     
     def predict(self, df_test): 
         self.X_test= df_test.loc[:,self.__features] # filter cols
