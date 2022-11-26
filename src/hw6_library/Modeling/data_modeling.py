@@ -39,5 +39,5 @@ class Train_and_predict_RF:
     
     def predict(self, df_test): 
         self.X_test= df_test.loc[:,self.__features] # filter cols
-        self.y_pred = self.model.predict(self.X_test)
+        self.y_pred = self.model.predict_proba(self.X_test)
         return self.y_pred
